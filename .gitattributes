@@ -1,4 +1,10 @@
-# Linguist language detection
-data/* linguist-vendored
-*.db linguist-vendored
-schema.sql linguist-detectable=true
+# GitHub Linguist Language Configuration
+*.csv linguist-vendored=true
+*.csv linguist-detectable=false
+*.db linguist-vendored=true
+data/** linguist-vendored=true
+power_bi_reference/** linguist-documentation=true
+
+*.py linguist-detectable=true
+*.sql linguist-detectable=true
+*.html linguist-detectable=true
