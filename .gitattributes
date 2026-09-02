@@ -1,0 +1,4 @@
+# Linguist language detection
+data/* linguist-vendored
+*.db linguist-vendored
+schema.sql linguist-detectable=true
