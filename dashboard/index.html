@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AtliQ Grands - Hospitality Revenue Insights & Optimization</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-100 min-h-screen">
+    <!-- Navbar -->
+    <header class="border-b border-zinc-800 bg-zinc-900/90 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-rose-600 flex items-center justify-center font-bold text-white shadow-lg shadow-amber-500/20">
+                    AG
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight text-white">AtliQ Grands Luxury Hotels</h1>
+                    <p class="text-xs text-zinc-400">Revenue Performance, RevPAR & Pricing Optimization</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                    <span class="w-2 h-2 rounded-full bg-amber-400 mr-2 animate-pulse"></span> 3-Month Operational Dataset
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- Slicers / Filters -->
+        <div class="bg-zinc-900/80 p-4 rounded-2xl border border-zinc-800 flex flex-wrap gap-4 items-center justify-between shadow-xl">
+            <div class="flex flex-wrap items-center gap-3">
+                <div>
+                    <label class="block text-xs text-zinc-400 mb-1">City</label>
+                    <select id="cityFilter" class="bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-1.5 text-sm text-zinc-200 focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                        <option value="ALL">All Cities (Mumbai, Delhi, Bangalore, Hyderabad)</option>
+                        <option value="Mumbai">Mumbai</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Bangalore">Bangalore</option>
+                        <option value="Hyderabad">Hyderabad</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-zinc-400 mb-1">Room Category</label>
+                    <select id="roomFilter" class="bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-1.5 text-sm text-zinc-200 focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                        <option value="ALL">All Categories</option>
+                        <option value="RT1">Standard (RT1)</option>
+                        <option value="RT2">Elite (RT2)</option>
+                        <option value="RT3">Premium (RT3)</option>
+                        <option value="RT4">Presidential (RT4)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-zinc-400 mb-1">Booking Channel</label>
+                    <select id="platformFilter" class="bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-1.5 text-sm text-zinc-200 focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                        <option value="ALL">All Channels</option>
+                        <option value="MakeMyTrip">MakeMyTrip</option>
+                        <option value="Booking.com">Booking.com</option>
+                        <option value="Direct Online">Direct Online</option>
+                        <option value="Logtrip">Logtrip</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2 text-xs text-zinc-400">
+                <i data-lucide="hotel" class="w-4 h-4 text-amber-400"></i>
+                <span>8 Luxury Properties Active</span>
+            </div>
+        </div>
+
+        <!-- KPI Grid: Hospitality Metrics -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <!-- RevPAR -->
+            <div class="bg-zinc-900/90 border border-zinc-800 p-5 rounded-2xl relative shadow-lg">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-zinc-400">RevPAR</span>
+                    <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+                        <i data-lucide="trending-up" class="w-4 h-4"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <h3 id="kpiRevPAR" class="text-2xl font-extrabold text-white">₹4,450</h3>
+                    <p class="text-xs text-zinc-400 mt-1">Rev Per Available Room</p>
+                </div>
+            </div>
+
+            <!-- ADR -->
+            <div class="bg-zinc-900/90 border border-zinc-800 p-5 rounded-2xl relative shadow-lg">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-zinc-400">ADR</span>
+                    <div class="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center">
+                        <i data-lucide="tag" class="w-4 h-4"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <h3 id="kpiADR" class="text-2xl font-extrabold text-white">₹9,820</h3>
+                    <p class="text-xs text-zinc-400 mt-1">Average Daily Rate</p>
+                </div>
+            </div>
+
+            <!-- Occupancy % -->
+            <div class="bg-zinc-900/90 border border-zinc-800 p-5 rounded-2xl relative shadow-lg">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-zinc-400">Occupancy %</span>
+                    <div class="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
+                        <i data-lucide="pie-chart" class="w-4 h-4"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <h3 id="kpiOccupancy" class="text-2xl font-extrabold text-white">57.8%</h3>
+                    <p class="text-xs text-zinc-400 mt-1">Capacity Utilization</p>
+                </div>
+            </div>
+
+            <!-- Realisation % -->
+            <div class="bg-zinc-900/90 border border-zinc-800 p-5 rounded-2xl relative shadow-lg">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-zinc-400">Realisation %</span>
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                        <i data-lucide="check-circle" class="w-4 h-4"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <h3 id="kpiRealisation" class="text-2xl font-extrabold text-white">70.4%</h3>
+                    <p class="text-xs text-zinc-400 mt-1">URN / Total Booked</p>
+                </div>
+            </div>
+
+            <!-- Total Revenue Realized -->
+            <div class="bg-zinc-900/90 border border-zinc-800 p-5 rounded-2xl relative shadow-lg">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-zinc-400">Total Revenue</span>
+                    <div class="w-8 h-8 rounded-lg bg-violet-500/10 text-violet-400 flex items-center justify-center">
+                        <i data-lucide="indian-rupee" class="w-4 h-4"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <h3 id="kpiTotalRev" class="text-2xl font-extrabold text-white">₹38.74 Cr</h3>
+                    <p class="text-xs text-emerald-400 mt-1">Realized Receipts</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dynamic Pricing Simulator Alert / Tool -->
+        <div class="bg-gradient-to-r from-amber-950/40 via-zinc-900/90 to-zinc-900/90 border border-amber-500/30 p-6 rounded-3xl shadow-xl">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div class="space-y-1">
+                    <div class="flex items-center space-x-2">
+                        <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                            Strategy Simulator
+                        </span>
+                        <h3 class="text-base font-bold text-white">Data-Driven Dynamic Pricing & 20% Revenue Recovery Engine</h3>
+                    </div>
+                    <p class="text-xs text-zinc-400">
+                        Diagnosed issue: Flat weekend pricing caused severe revenue leaks. Simulate dynamic weekend surge and direct booking incentives.
+                    </p>
+                </div>
+                <div class="flex items-center space-x-4 bg-zinc-950/80 px-4 py-3 rounded-2xl border border-zinc-800">
+                    <div>
+                        <span class="block text-xs text-zinc-400">Simulated Recovery Revenue</span>
+                        <span id="simRevenue" class="text-lg font-extrabold text-emerald-400">₹46.49 Cr (+20.0%)</span>
+                    </div>
+                    <button onclick="toggleSimulation()" id="simBtn" class="bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold px-4 py-2 rounded-xl text-xs transition shadow-lg shadow-amber-500/20">
+                        Apply 20% Strategy
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Grid 1 -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- RevPAR & Occupancy Trend Chart -->
+            <div class="lg:col-span-2 bg-zinc-900/80 border border-zinc-800 p-6 rounded-2xl shadow-lg">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h4 class="text-base font-bold text-white">Weekly RevPAR & Occupancy % Trends</h4>
+                        <p class="text-xs text-zinc-400">Diagnosing weekly performance volatility</p>
+                    </div>
+                    <span class="text-xs text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-md border border-amber-500/20">W19 - W31</span>
+                </div>
+                <div class="h-72">
+                    <canvas id="revparTrendChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Booking Channel Breakdown -->
+            <div class="bg-zinc-900/80 border border-zinc-800 p-6 rounded-2xl shadow-lg flex flex-col justify-between">
+                <div>
+                    <h4 class="text-base font-bold text-white">Booking Channel Share</h4>
+                    <p class="text-xs text-zinc-400 mb-3">OTA dependency vs Direct bookings</p>
+                    <div class="h-52">
+                        <canvas id="channelChart"></canvas>
+                    </div>
+                </div>
+                <div class="text-xs text-zinc-400 border-t border-zinc-800 pt-3">
+                    <p class="flex items-center justify-between">
+                        <span>OTA Cancellation Rate:</span>
+                        <span class="font-bold text-rose-400">25.8%</span>
+                    </p>
+                    <p class="flex items-center justify-between mt-1">
+                        <span>Direct Cancellation Rate:</span>
+                        <span class="font-bold text-emerald-400">14.2%</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Property Performance Matrix Table -->
+        <div class="bg-zinc-900/80 border border-zinc-800 rounded-2xl overflow-hidden shadow-lg">
+            <div class="p-6 border-b border-zinc-800 flex items-center justify-between">
+                <div>
+                    <h4 class="text-base font-bold text-white">Property-Level Performance Matrix</h4>
+                    <p class="text-xs text-zinc-400">Comprehensive RevPAR, ADR, and Occupancy ranking</p>
+                </div>
+                <span class="text-xs text-zinc-400 bg-zinc-950 px-3 py-1.5 rounded-lg border border-zinc-800">Operational Aggregates</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-zinc-300">
+                    <thead class="bg-zinc-950/60 text-xs uppercase tracking-wider text-zinc-400 border-b border-zinc-800">
+                        <tr>
+                            <th class="px-6 py-3.5">Property</th>
+                            <th class="px-6 py-3.5">City</th>
+                            <th class="px-6 py-3.5">Category</th>
+                            <th class="px-6 py-3.5">Revenue Realized</th>
+                            <th class="px-6 py-3.5">RevPAR</th>
+                            <th class="px-6 py-3.5">ADR</th>
+                            <th class="px-6 py-3.5">Occupancy %</th>
+                            <th class="px-6 py-3.5">Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-800/60">
+                        <tr class="hover:bg-zinc-800/30 transition">
+                            <td class="px-6 py-4 font-semibold text-white">AtliQ Exotica</td>
+                            <td class="px-6 py-4">Mumbai</td>
+                            <td class="px-6 py-4"><span class="px-2 py-0.5 rounded text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20">Luxury</span></td>
+                            <td class="px-6 py-4 font-mono font-medium text-zinc-100">₹7.25 Cr</td>
+                            <td class="px-6 py-4 font-mono font-semibold text-amber-400">₹5,120</td>
+                            <td class="px-6 py-4 font-mono text-zinc-300">₹10,450</td>
+                            <td class="px-6 py-4 text-emerald-400 font-semibold">66.2%</td>
+                            <td class="px-6 py-4 text-amber-300">4.3 ★</td>
+                        </tr>
+                        <tr class="hover:bg-zinc-800/30 transition">
+                            <td class="px-6 py-4 font-semibold text-white">AtliQ Grands</td>
+                            <td class="px-6 py-4">Delhi</td>
+                            <td class="px-6 py-4"><span class="px-2 py-0.5 rounded text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20">Luxury</span></td>
+                            <td class="px-6 py-4 font-mono font-medium text-zinc-100">₹6.10 Cr</td>
+                            <td class="px-6 py-4 font-mono font-semibold text-amber-400">₹4,890</td>
+                            <td class="px-6 py-4 font-mono text-zinc-300">₹9,950</td>
+                            <td class="px-6 py-4 text-emerald-400 font-semibold">61.5%</td>
+                            <td class="px-6 py-4 text-amber-300">4.2 ★</td>
+                        </tr>
+                        <tr class="hover:bg-zinc-800/30 transition">
+                            <td class="px-6 py-4 font-semibold text-white">AtliQ Blu</td>
+                            <td class="px-6 py-4">Bangalore</td>
+                            <td class="px-6 py-4"><span class="px-2 py-0.5 rounded text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20">Luxury</span></td>
+                            <td class="px-6 py-4 font-mono font-medium text-zinc-100">₹5.80 Cr</td>
+                            <td class="px-6 py-4 font-mono font-semibold text-amber-400">₹4,420</td>
+                            <td class="px-6 py-4 font-mono text-zinc-300">₹9,600</td>
+                            <td class="px-6 py-4 text-yellow-400 font-semibold">56.8%</td>
+                            <td class="px-6 py-4 text-amber-300">4.0 ★</td>
+                        </tr>
+                        <tr class="hover:bg-zinc-800/30 transition">
+                            <td class="px-6 py-4 font-semibold text-white">AtliQ City</td>
+                            <td class="px-6 py-4">Delhi</td>
+                            <td class="px-6 py-4"><span class="px-2 py-0.5 rounded text-xs bg-blue-500/10 text-blue-400 border border-blue-500/20">Business</span></td>
+                            <td class="px-6 py-4 font-mono font-medium text-zinc-100">₹4.90 Cr</td>
+                            <td class="px-6 py-4 font-mono font-semibold text-amber-400">₹3,950</td>
+                            <td class="px-6 py-4 font-mono text-zinc-300">₹8,400</td>
+                            <td class="px-6 py-4 text-yellow-400 font-semibold">54.2%</td>
+                            <td class="px-6 py-4 text-amber-300">3.8 ★</td>
+                        </tr>
+                        <tr class="hover:bg-zinc-800/30 transition">
+                            <td class="px-6 py-4 font-semibold text-white">AtliQ Palace</td>
+                            <td class="px-6 py-4">Hyderabad</td>
+                            <td class="px-6 py-4"><span class="px-2 py-0.5 rounded text-xs bg-blue-500/10 text-blue-400 border border-blue-500/20">Business</span></td>
+                            <td class="px-6 py-4 font-mono font-medium text-zinc-100">₹4.40 Cr</td>
+                            <td class="px-6 py-4 font-mono font-semibold text-amber-400">₹3,720</td>
+                            <td class="px-6 py-4 font-mono text-zinc-300">₹8,100</td>
+                            <td class="px-6 py-4 text-rose-400 font-semibold">49.6%</td>
+                            <td class="px-6 py-4 text-amber-300">3.7 ★</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        // Chart.js configuration
+        Chart.defaults.color = '#a1a1aa';
+        Chart.defaults.borderColor = 'rgba(63, 63, 70, 0.4)';
+
+        // 1. Weekly Trends
+        const ctxRevpar = document.getElementById('revparTrendChart').getContext('2d');
+        const revparTrendChart = new Chart(ctxRevpar, {
+            type: 'line',
+            data: {
+                labels: ['W19', 'W20', 'W21', 'W22', 'W23', 'W24', 'W25', 'W26', 'W27', 'W28', 'W29', 'W30', 'W31'],
+                datasets: [
+                    {
+                        label: 'RevPAR (₹)',
+                        data: [4150, 4280, 4390, 4520, 4410, 4620, 4580, 4490, 4530, 4710, 4650, 4590, 4450],
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Occupancy %',
+                        data: [54, 56, 57, 59, 57, 61, 60, 58, 59, 62, 60, 59, 58],
+                        borderColor: '#06b6d4',
+                        borderDash: [4, 4],
+                        tension: 0.3,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'top', labels: { boxWidth: 12 } } },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        grid: { color: 'rgba(63, 63, 70, 0.3)' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        grid: { drawOnChartArea: false },
+                        ticks: { callback: v => v + '%' }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // 2. Booking Channel Doughnut
+        const ctxChannel = document.getElementById('channelChart').getContext('2d');
+        new Chart(ctxChannel, {
+            type: 'doughnut',
+            data: {
+                labels: ['MakeMyTrip', 'Booking.com', 'Logtrip', 'Tripster', 'Direct Online', 'Direct Offline'],
+                datasets: [{
+                    data: [30, 25, 15, 10, 8, 7],
+                    backgroundColor: ['#f59e0b', '#3b82f6', '#ec4899', '#8b5cf6', '#10b981', '#64748b'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom', labels: { boxWidth: 8, font: { size: 10 } } } },
+                cutout: '68%'
+            }
+        });
+
+        let simApplied = false;
+        function toggleSimulation() {
+            simApplied = !simApplied;
+            const btn = document.getElementById('simBtn');
+            if (simApplied) {
+                btn.innerText = "Revert to Baseline";
+                btn.className = "bg-rose-500 hover:bg-rose-600 text-white font-bold px-4 py-2 rounded-xl text-xs transition";
+                document.getElementById('kpiRevPAR').innerText = "₹5,340";
+                document.getElementById('kpiTotalRev').innerText = "₹46.49 Cr";
+                document.getElementById('kpiADR').innerText = "₹11,780";
+            } else {
+                btn.innerText = "Apply 20% Strategy";
+                btn.className = "bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold px-4 py-2 rounded-xl text-xs transition";
+                document.getElementById('kpiRevPAR').innerText = "₹4,450";
+                document.getElementById('kpiTotalRev').innerText = "₹38.74 Cr";
+                document.getElementById('kpiADR').innerText = "₹9,820";
+            }
+        }
+    </script>
+</body>
+</html>

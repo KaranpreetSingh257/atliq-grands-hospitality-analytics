@@ -1,0 +1,5 @@
+room_id,room_class,base_price
+RT1,Standard,4500
+RT2,Elite,7500
+RT3,Premium,11000
+RT4,Presidential,18500
